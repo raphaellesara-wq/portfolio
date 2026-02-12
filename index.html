@@ -15,6 +15,24 @@
       direction: rtl;
     }
 
+    /* Animations */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes confetti {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+    }
+
     /* Header */
     .app-header {
       background: linear-gradient(135deg, #e8f5e9 0%, #e3f0fc 50%, #fce4ec 100%);
@@ -41,9 +59,38 @@
       -webkit-text-fill-color: transparent;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
     .header-date {
       color: #8a8a9a;
       font-size: 0.9rem;
+    }
+
+    .progress-ring {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #8a8a9a;
+    }
+
+    .progress-bar-mini {
+      width: 80px;
+      height: 6px;
+      background: #e8e4f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-mini .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a8d8b9, #8bc6a0);
+      border-radius: 3px;
+      transition: width 0.5s ease;
     }
 
     /* Main Layout */
@@ -52,7 +99,7 @@
       margin: 0 auto;
       padding: 24px;
       display: grid;
-      grid-template-columns: 260px 1fr;
+      grid-template-columns: 280px 1fr;
       gap: 24px;
       min-height: calc(100vh - 65px);
     }
@@ -61,22 +108,23 @@
     .sidebar {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .sidebar-section-title {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
-      color: #aaa;
-      letter-spacing: 1px;
+      color: #b0b0c0;
+      letter-spacing: 1.5px;
       padding: 16px 12px 8px;
+      font-weight: 600;
     }
 
     .nav-btn {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 16px;
+      padding: 11px 16px;
       border: none;
       background: transparent;
       color: #7a7a8a;
@@ -105,6 +153,81 @@
       border-radius: 10px;
       font-weight: 600;
     }
+
+    /* Mini Calendar */
+    .mini-calendar {
+      background: #ffffff;
+      border: 1px solid #e8e4f0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 8px;
+    }
+
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .cal-header span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #5a5a6a;
+    }
+
+    .cal-nav {
+      border: none;
+      background: none;
+      color: #8a8a9a;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .cal-nav:hover { background: #f0ecf8; }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+    }
+
+    .cal-day-name {
+      font-size: 0.65rem;
+      color: #b0b0c0;
+      padding: 4px 0;
+      font-weight: 600;
+    }
+
+    .cal-day {
+      font-size: 0.75rem;
+      padding: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #6a6a7a;
+      position: relative;
+    }
+
+    .cal-day:hover { background: #f0ecf8; }
+    .cal-day.today { background: #a8d8b9; color: #fff; font-weight: 700; }
+    .cal-day.has-items::after {
+      content: '';
+      position: absolute;
+      bottom: 1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: #f0b4c8;
+      border-radius: 50%;
+    }
+    .cal-day.selected { background: #b8d4e8; color: #fff; }
+    .cal-day.other-month { color: #d0d0d8; }
 
     .add-btn {
       display: flex;
@@ -137,6 +260,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .content-title {
@@ -164,6 +289,74 @@
 
     .view-btn.active { background: #b8d4e8; color: #fff; border-color: #b8d4e8; }
     .view-btn:hover:not(.active) { border-color: #b8d4e8; color: #6a7a8a; }
+
+    /* Quick Add Bar */
+    .quick-add {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid #e8e4f0;
+      border-radius: 12px;
+      padding: 8px 12px;
+      transition: border-color 0.2s;
+    }
+
+    .quick-add:focus-within { border-color: #a8d8b9; box-shadow: 0 0 0 3px #a8d8b920; }
+
+    .quick-add input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: #4a4a5a;
+      outline: none;
+      direction: rtl;
+    }
+
+    .quick-add input::placeholder { color: #c0c0cc; }
+
+    .quick-type-btns {
+      display: flex;
+      gap: 4px;
+    }
+
+    .quick-type-btn {
+      border: none;
+      background: #f4f0fa;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      color: #8a8a9a;
+    }
+
+    .quick-type-btn:hover { background: #e8dff5; }
+    .quick-type-btn.active { font-weight: 600; }
+    .quick-type-btn.active[data-type="task"] { background: #d4f0dd; color: #5a9a6e; }
+    .quick-type-btn.active[data-type="event"] { background: #fce4ec; color: #b8707e; }
+    .quick-type-btn.active[data-type="meeting"] { background: #e3f0fc; color: #6090b0; }
+    .quick-type-btn.active[data-type="lesson"] { background: #fff8e1; color: #a09040; }
+
+    .quick-add-btn {
+      border: none;
+      background: #a8d8b9;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quick-add-btn:hover { background: #8ec8a4; }
 
     /* Search Bar */
     .search-bar {
@@ -196,6 +389,46 @@
       color: #b0b0c0;
     }
 
+    /* Stats Cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #e8e4f0;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+    .stat-card.stat-task { border-top: 3px solid #a8d8b9; }
+    .stat-card.stat-event { border-top: 3px solid #f0b4c8; }
+    .stat-card.stat-meeting { border-top: 3px solid #a8c8e8; }
+    .stat-card.stat-lesson { border-top: 3px solid #f0e0a0; }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #9a9aaa;
+    }
+
+    .stat-task .stat-number { color: #8bc6a0; }
+    .stat-event .stat-number { color: #d8909e; }
+    .stat-meeting .stat-number { color: #7aaccc; }
+    .stat-lesson .stat-number { color: #c8b060; }
+
     /* Items List */
     .items-list {
       display: flex;
@@ -220,15 +453,18 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      transition: all 0.2s;
+      transition: all 0.25s;
       cursor: pointer;
       position: relative;
+      animation: slideIn 0.3s ease;
     }
 
     .item-card:hover { border-color: #d0c8e0; transform: translateX(2px); box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
 
     .item-card.completed { opacity: 0.5; }
     .item-card.completed .item-title { text-decoration: line-through; }
+
+    .item-card.overdue { border-right: 3px solid #f0b4c8; }
 
     .item-type-indicator {
       width: 4px;
@@ -241,6 +477,13 @@
     .type-event { background: #f0b4c8; }
     .type-meeting { background: #a8c8e8; }
     .type-lesson { background: #f0e0a0; }
+
+    .item-color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
     .item-checkbox {
       width: 22px;
@@ -268,10 +511,19 @@
       font-weight: 500;
     }
 
+    .item-description {
+      font-size: 0.8rem;
+      color: #9a9aaa;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .item-meta {
       display: flex;
-      gap: 16px;
-      font-size: 0.8rem;
+      gap: 14px;
+      font-size: 0.78rem;
       color: #9a9aaa;
       flex-wrap: wrap;
     }
@@ -289,6 +541,15 @@
     .priority-high { background: #fce4ec; color: #d48a9a; }
     .priority-medium { background: #fff8e1; color: #c8b060; }
     .priority-low { background: #e3f0fc; color: #7aaccc; }
+
+    .overdue-badge {
+      background: #fce4ec;
+      color: #d48a9a;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
 
     .item-actions {
       display: flex;
@@ -322,10 +583,12 @@
       text-align: center;
       padding: 60px 20px;
       color: #b0b0c0;
+      animation: fadeIn 0.5s ease;
     }
 
-    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 16px; }
-    .empty-state p { font-size: 1rem; }
+    .empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .empty-state p { font-size: 1rem; margin-bottom: 6px; }
+    .empty-state .empty-sub { font-size: 0.85rem; color: #c8c8d0; }
 
     /* Modal */
     .modal-overlay {
@@ -349,12 +612,13 @@
       border: 1px solid #e8e4f0;
       border-radius: 16px;
       width: 90%;
-      max-width: 520px;
+      max-width: 540px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 28px;
       direction: rtl;
       box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      animation: scaleIn 0.25s ease;
     }
 
     .modal-title {
@@ -363,6 +627,38 @@
       color: #4a4a5a;
       margin-bottom: 24px;
     }
+
+    /* Type Selector Buttons */
+    .type-selector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .type-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 8px;
+      border: 2px solid #e8e4f0;
+      background: #fff;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      font-size: 0.8rem;
+      color: #8a8a9a;
+    }
+
+    .type-option:hover { border-color: #d0c8e0; }
+    .type-option .type-icon { font-size: 1.4rem; }
+
+    .type-option.active[data-type="task"] { border-color: #a8d8b9; background: #e8f5e9; color: #5a9a6e; }
+    .type-option.active[data-type="event"] { border-color: #f0b4c8; background: #fce4ec; color: #b8707e; }
+    .type-option.active[data-type="meeting"] { border-color: #a8c8e8; background: #e3f0fc; color: #6090b0; }
+    .type-option.active[data-type="lesson"] { border-color: #f0e0a0; background: #fff8e1; color: #a09040; }
 
     .form-group {
       margin-bottom: 18px;
@@ -396,9 +692,10 @@
     .form-group select:focus,
     .form-group textarea:focus {
       border-color: #a8c8e8;
+      box-shadow: 0 0 0 3px #a8c8e820;
     }
 
-    .form-group textarea { min-height: 80px; resize: vertical; }
+    .form-group textarea { min-height: 70px; resize: vertical; }
 
     .form-group select { cursor: pointer; }
 
@@ -406,6 +703,60 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Color Picker */
+    .color-picker-group {
+      margin-bottom: 18px;
+    }
+
+    .color-picker-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #8a8a9a;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .color-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .color-option {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .color-option:hover { transform: scale(1.15); }
+
+    .color-option.selected {
+      border-color: #4a4a5a;
+      transform: scale(1.1);
+    }
+
+    .color-option.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
     .modal-actions {
@@ -430,42 +781,8 @@
     .btn-primary:hover { background: #8ec8a4; }
     .btn-secondary { background: #e8e4f0; color: #8a8a9a; }
     .btn-secondary:hover { background: #d8d0e8; color: #5a5a6a; }
-
-    /* Stats Cards */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-
-    .stat-card {
-      background: #ffffff;
-      border: 1px solid #e8e4f0;
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat-card.stat-task { border-top: 3px solid #a8d8b9; }
-    .stat-card.stat-event { border-top: 3px solid #f0b4c8; }
-    .stat-card.stat-meeting { border-top: 3px solid #a8c8e8; }
-    .stat-card.stat-lesson { border-top: 3px solid #f0e0a0; }
-
-    .stat-number {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: #9a9aaa;
-    }
-
-    .stat-task .stat-number { color: #8bc6a0; }
-    .stat-event .stat-number { color: #d8909e; }
-    .stat-meeting .stat-number { color: #7aaccc; }
-    .stat-lesson .stat-number { color: #c8b060; }
+    .btn-danger { background: #fce4ec; color: #d48a9a; }
+    .btn-danger:hover { background: #f8d0d8; }
 
     /* Toast Notification */
     .toast {
@@ -482,9 +799,22 @@
       transition: transform 0.3s ease;
       border: 1px solid #e0dce8;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .toast-icon { font-size: 1.1rem; }
+
+    /* Confetti */
+    .confetti-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 400;
+      animation: confetti 0.8s ease-out forwards;
+    }
 
     /* Responsive */
     @media (max-width: 768px) {
@@ -498,9 +828,11 @@
         overflow-x: auto;
         gap: 4px;
         padding-bottom: 8px;
+        flex-wrap: wrap;
       }
 
       .sidebar-section-title { display: none; }
+      .mini-calendar { display: none; }
 
       .nav-btn {
         white-space: nowrap;
@@ -510,15 +842,17 @@
 
       .nav-btn .badge { display: none; }
 
-      .stats-row {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .form-row-3 { grid-template-columns: 1fr; }
+      .type-selector { grid-template-columns: repeat(2, 1fr); }
       .add-btn { margin-top: 0; }
+
+      .quick-add { flex-wrap: wrap; }
+      .quick-type-btns { width: 100%; justify-content: center; }
+
+      .header-right { gap: 8px; }
+      .progress-ring { display: none; }
     }
   </style>
 </head>
@@ -528,7 +862,15 @@
   <header class="app-header">
     <div class="header-content">
       <div class="app-title">היומן שלי</div>
-      <div class="header-date" id="headerDate"></div>
+      <div class="header-right">
+        <div class="progress-ring">
+          <span id="progressText">0%</span>
+          <div class="progress-bar-mini">
+            <div class="fill" id="progressFill" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="header-date" id="headerDate"></div>
+      </div>
     </div>
   </header>
 
@@ -558,6 +900,17 @@
         <span class="icon">📚</span> שיעורים
         <span class="badge" id="badgeLesson">0</span>
       </button>
+
+      <!-- Mini Calendar -->
+      <div class="mini-calendar">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
+          <span id="calMonthYear"></span>
+          <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+
       <button class="add-btn" onclick="openModal()">+ הוסף פריט חדש</button>
     </aside>
 
@@ -565,22 +918,34 @@
     <main class="main-content">
       <!-- Stats -->
       <div class="stats-row">
-        <div class="stat-card stat-task">
+        <div class="stat-card stat-task" onclick="setFilter('task')">
           <div class="stat-number" id="statTask">0</div>
           <div class="stat-label">משימות</div>
         </div>
-        <div class="stat-card stat-event">
+        <div class="stat-card stat-event" onclick="setFilter('event')">
           <div class="stat-number" id="statEvent">0</div>
           <div class="stat-label">אירועים</div>
         </div>
-        <div class="stat-card stat-meeting">
+        <div class="stat-card stat-meeting" onclick="setFilter('meeting')">
           <div class="stat-number" id="statMeeting">0</div>
           <div class="stat-label">פגישות</div>
         </div>
-        <div class="stat-card stat-lesson">
+        <div class="stat-card stat-lesson" onclick="setFilter('lesson')">
           <div class="stat-number" id="statLesson">0</div>
           <div class="stat-label">שיעורים</div>
         </div>
+      </div>
+
+      <!-- Quick Add -->
+      <div class="quick-add">
+        <input type="text" id="quickAddInput" placeholder="הוספה מהירה - הקלד כותרת ולחץ Enter..." onkeydown="handleQuickAdd(event)">
+        <div class="quick-type-btns">
+          <button class="quick-type-btn active" data-type="task" onclick="setQuickType('task')">משימה</button>
+          <button class="quick-type-btn" data-type="event" onclick="setQuickType('event')">אירוע</button>
+          <button class="quick-type-btn" data-type="meeting" onclick="setQuickType('meeting')">פגישה</button>
+          <button class="quick-type-btn" data-type="lesson" onclick="setQuickType('lesson')">שיעור</button>
+        </div>
+        <button class="quick-add-btn" onclick="submitQuickAdd()" title="הוסף">+</button>
       </div>
 
       <!-- Header + Search -->
@@ -608,14 +973,24 @@
     <div class="modal">
       <div class="modal-title" id="modalTitle">הוסף פריט חדש</div>
 
-      <div class="form-group">
-        <label>סוג</label>
-        <select id="formType" onchange="updateFormFields()">
-          <option value="task">משימה</option>
-          <option value="event">אירוע</option>
-          <option value="meeting">פגישה</option>
-          <option value="lesson">שיעור</option>
-        </select>
+      <!-- Type Selector -->
+      <div class="type-selector" id="typeSelector">
+        <button class="type-option active" data-type="task" onclick="selectType('task')">
+          <span class="type-icon">✅</span>
+          משימה
+        </button>
+        <button class="type-option" data-type="event" onclick="selectType('event')">
+          <span class="type-icon">🎉</span>
+          אירוע
+        </button>
+        <button class="type-option" data-type="meeting" onclick="selectType('meeting')">
+          <span class="type-icon">🤝</span>
+          פגישה
+        </button>
+        <button class="type-option" data-type="lesson" onclick="selectType('lesson')">
+          <span class="type-icon">📚</span>
+          שיעור
+        </button>
       </div>
 
       <div class="form-group">
@@ -634,9 +1009,17 @@
           <input type="date" id="formDate">
         </div>
         <div class="form-group">
-          <label>שעה</label>
+          <label>שעת התחלה</label>
           <input type="time" id="formTime">
         </div>
+      </div>
+
+      <div class="form-row" id="endTimeRow">
+        <div class="form-group">
+          <label>שעת סיום</label>
+          <input type="time" id="formEndTime">
+        </div>
+        <div></div>
       </div>
 
       <div class="form-group" id="priorityGroup">
@@ -663,49 +1046,55 @@
         <input type="text" id="formSubject" placeholder="שם המקצוע...">
       </div>
 
+      <!-- Color Picker -->
+      <div class="color-picker-group">
+        <label>צבע סימון</label>
+        <div class="color-options" id="colorOptions"></div>
+      </div>
+
       <input type="hidden" id="formEditId">
 
       <div class="modal-actions">
         <button class="btn btn-primary" onclick="saveItem()">שמור</button>
         <button class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+        <button class="btn btn-danger" id="deleteBtn" style="display:none; margin-right:auto; margin-left:0;" onclick="deleteFromModal()">מחק</button>
       </div>
     </div>
   </div>
 
   <!-- Toast -->
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast"><span class="toast-icon"></span><span id="toastMsg"></span></div>
 
   <script>
     // State
     let items = JSON.parse(localStorage.getItem('journal-items') || '[]');
     let currentFilter = 'all';
     let sortMode = 'date';
+    let quickType = 'task';
+    let selectedColor = '#a8d8b9';
+    let calDate = new Date();
+
+    // Color palette
+    const colorPalette = [
+      '#a8d8b9', '#80c9a0', '#b5e6d0',
+      '#a8c8e8', '#89b4d8', '#b8d8f0',
+      '#f0b4c8', '#e8a0b8', '#f5c8d8',
+      '#f0e0a0', '#e8d488', '#f5ecc0',
+      '#d4b8e8', '#c0a0d8', '#e0c8f0',
+      '#f0c8a0', '#e8b888', '#f5d8c0',
+    ];
 
     // Hebrew labels
-    const typeLabels = {
-      task: 'משימה',
-      event: 'אירוע',
-      meeting: 'פגישה',
-      lesson: 'שיעור'
-    };
-
-    const priorityLabels = {
-      high: 'גבוהה',
-      medium: 'בינונית',
-      low: 'נמוכה'
-    };
-
-    const filterTitles = {
-      all: 'כל הפריטים',
-      task: 'משימות',
-      event: 'אירועים',
-      meeting: 'פגישות',
-      lesson: 'שיעורים'
-    };
+    const typeLabels = { task: 'משימה', event: 'אירוע', meeting: 'פגישה', lesson: 'שיעור' };
+    const priorityLabels = { high: 'גבוהה', medium: 'בינונית', low: 'נמוכה' };
+    const filterTitles = { all: 'כל הפריטים', task: 'משימות', event: 'אירועים', meeting: 'פגישות', lesson: 'שיעורים' };
+    const typeDefColors = { task: '#a8d8b9', event: '#f0b4c8', meeting: '#a8c8e8', lesson: '#f0e0a0' };
 
     // Init
     function init() {
       updateHeaderDate();
+      renderColorPicker();
+      renderCalendar();
       renderItems();
       updateStats();
     }
@@ -714,6 +1103,86 @@
       const now = new Date();
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       document.getElementById('headerDate').textContent = now.toLocaleDateString('he-IL', options);
+    }
+
+    // Color Picker
+    function renderColorPicker() {
+      const container = document.getElementById('colorOptions');
+      container.innerHTML = colorPalette.map(c =>
+        `<div class="color-option ${c === selectedColor ? 'selected' : ''}" style="background:${c}" onclick="pickColor('${c}')" title="${c}"></div>`
+      ).join('');
+    }
+
+    function pickColor(color) {
+      selectedColor = color;
+      renderColorPicker();
+    }
+
+    // Mini Calendar
+    function renderCalendar() {
+      const grid = document.getElementById('calGrid');
+      const year = calDate.getFullYear();
+      const month = calDate.getMonth();
+
+      const monthNames = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+      document.getElementById('calMonthYear').textContent = `${monthNames[month]} ${year}`;
+
+      const dayNames = ['א','ב','ג','ד','ה','ו','ש'];
+      let html = dayNames.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrev = new Date(year, month, 0).getDate();
+      const today = new Date();
+
+      const itemDates = new Set(items.map(i => i.date));
+
+      for (let i = firstDay - 1; i >= 0; i--) {
+        html += `<div class="cal-day other-month">${daysInPrev - i}</div>`;
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        const hasItems = itemDates.has(dateStr);
+        html += `<div class="cal-day ${isToday ? 'today' : ''} ${hasItems ? 'has-items' : ''}" onclick="filterByDate('${dateStr}')">${d}</div>`;
+      }
+
+      const totalCells = firstDay + daysInMonth;
+      const remaining = (7 - (totalCells % 7)) % 7;
+      for (let i = 1; i <= remaining; i++) {
+        html += `<div class="cal-day other-month">${i}</div>`;
+      }
+
+      grid.innerHTML = html;
+    }
+
+    function changeMonth(dir) {
+      calDate.setMonth(calDate.getMonth() + dir);
+      renderCalendar();
+    }
+
+    function filterByDate(dateStr) {
+      document.getElementById('searchInput').value = '';
+      currentFilter = 'all';
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === 'all');
+      });
+      document.getElementById('contentTitle').textContent = formatDateHebrew(dateStr);
+
+      const list = document.getElementById('itemsList');
+      const filtered = items.filter(i => i.date === dateStr);
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p>אין פריטים בתאריך זה</p></div>`;
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(item => {
+        html += buildItemCard(item);
+      });
+      list.innerHTML = html;
     }
 
     // Filter
@@ -736,9 +1205,90 @@
       renderItems();
     }
 
+    // Quick Add
+    function setQuickType(type) {
+      quickType = type;
+      document.querySelectorAll('.quick-type-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+      });
+    }
+
+    function handleQuickAdd(e) {
+      if (e.key === 'Enter') submitQuickAdd();
+    }
+
+    function submitQuickAdd() {
+      const input = document.getElementById('quickAddInput');
+      const title = input.value.trim();
+      if (!title) return;
+
+      const today = new Date().toISOString().split('T')[0];
+      items.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+        type: quickType,
+        title: title,
+        description: '',
+        date: today,
+        time: '',
+        endTime: '',
+        priority: quickType === 'task' ? 'medium' : null,
+        location: null,
+        participants: null,
+        subject: null,
+        color: typeDefColors[quickType],
+        completed: false
+      });
+
+      input.value = '';
+      saveToStorage();
+      renderItems();
+      renderCalendar();
+      showToast('✅', 'פריט חדש נוסף');
+    }
+
     // Save to localStorage
     function saveToStorage() {
       localStorage.setItem('journal-items', JSON.stringify(items));
+    }
+
+    // Build single item card HTML
+    function buildItemCard(item) {
+      const priorityClass = item.priority ? `priority-${item.priority}` : '';
+      const priorityText = item.priority ? priorityLabels[item.priority] : '';
+      const itemColor = item.color || typeDefColors[item.type] || '#a8d8b9';
+
+      const isOverdue = !item.completed && item.date && item.date < new Date().toISOString().split('T')[0];
+
+      let metaHtml = '';
+      if (item.date) metaHtml += `<span>📅 ${formatDateShort(item.date)}</span>`;
+      if (item.time) {
+        let timeStr = item.time;
+        if (item.endTime) timeStr += ` - ${item.endTime}`;
+        metaHtml += `<span>🕐 ${timeStr}</span>`;
+      }
+      if (item.location) metaHtml += `<span>📍 ${escapeHtml(item.location)}</span>`;
+      if (item.participants) metaHtml += `<span>👥 ${escapeHtml(item.participants)}</span>`;
+      if (item.subject) metaHtml += `<span>📖 ${escapeHtml(item.subject)}</span>`;
+      metaHtml += `<span>${typeLabels[item.type]}</span>`;
+
+      const descHtml = item.description ? `<div class="item-description">${escapeHtml(item.description)}</div>` : '';
+
+      return `
+        <div class="item-card ${item.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}">
+          <div class="item-type-indicator" style="background:${itemColor}"></div>
+          <div class="item-checkbox ${item.completed ? 'checked' : ''}" onclick="toggleComplete('${item.id}')"></div>
+          <div class="item-info">
+            <div class="item-title">${escapeHtml(item.title)}</div>
+            ${descHtml}
+            <div class="item-meta">${metaHtml}</div>
+          </div>
+          ${isOverdue ? '<span class="overdue-badge">באיחור</span>' : ''}
+          ${priorityText ? `<div class="item-priority ${priorityClass}">${priorityText}</div>` : ''}
+          <div class="item-actions">
+            <button class="action-btn" onclick="editItem('${item.id}')" title="עריכה">✏️</button>
+            <button class="action-btn delete" onclick="deleteItem('${item.id}')" title="מחיקה">🗑️</button>
+          </div>
+        </div>`;
     }
 
     // Render
@@ -753,7 +1303,6 @@
         return true;
       });
 
-      // Sort
       if (sortMode === 'date') {
         filtered.sort((a, b) => {
           const da = a.date || '9999-99-99';
@@ -768,7 +1317,6 @@
         filtered.sort((a, b) => tOrder[a.type] - tOrder[b.type]);
       }
 
-      // Move completed to end
       filtered.sort((a, b) => (a.completed ? 1 : 0) - (b.completed ? 1 : 0));
 
       if (filtered.length === 0) {
@@ -776,6 +1324,7 @@
           <div class="empty-state">
             <div class="empty-icon">📭</div>
             <p>אין פריטים להצגה</p>
+            <p class="empty-sub">לחץ על "+" או השתמש בהוספה המהירה למעלה</p>
           </div>`;
         updateStats();
         return;
@@ -789,32 +1338,7 @@
           lastDate = item.date;
           html += `<div class="date-group-title">${formatDateHebrew(item.date)}</div>`;
         }
-
-        const priorityClass = item.priority ? `priority-${item.priority}` : '';
-        const priorityText = item.priority ? priorityLabels[item.priority] : '';
-
-        let metaHtml = '';
-        if (item.date) metaHtml += `<span>📅 ${formatDateShort(item.date)}</span>`;
-        if (item.time) metaHtml += `<span>🕐 ${item.time}</span>`;
-        if (item.location) metaHtml += `<span>📍 ${item.location}</span>`;
-        if (item.participants) metaHtml += `<span>👥 ${item.participants}</span>`;
-        if (item.subject) metaHtml += `<span>📖 ${item.subject}</span>`;
-        metaHtml += `<span>${typeLabels[item.type]}</span>`;
-
-        html += `
-          <div class="item-card ${item.completed ? 'completed' : ''}">
-            <div class="item-type-indicator type-${item.type}"></div>
-            <div class="item-checkbox ${item.completed ? 'checked' : ''}" onclick="toggleComplete('${item.id}')"></div>
-            <div class="item-info">
-              <div class="item-title">${escapeHtml(item.title)}</div>
-              <div class="item-meta">${metaHtml}</div>
-            </div>
-            ${priorityText ? `<div class="item-priority ${priorityClass}">${priorityText}</div>` : ''}
-            <div class="item-actions">
-              <button class="action-btn" onclick="editItem('${item.id}')" title="עריכה">✏️</button>
-              <button class="action-btn delete" onclick="deleteItem('${item.id}')" title="מחיקה">🗑️</button>
-            </div>
-          </div>`;
+        html += buildItemCard(item);
       });
 
       list.innerHTML = html;
@@ -828,9 +1352,12 @@
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
 
       if (date.getTime() === today.getTime()) return 'היום';
       if (date.getTime() === tomorrow.getTime()) return 'מחר';
+      if (date.getTime() === yesterday.getTime()) return 'אתמול';
 
       return date.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
     }
@@ -847,9 +1374,13 @@
       return div.innerHTML;
     }
 
-    // Stats
+    // Stats & Progress
     function updateStats() {
       const active = items.filter(i => !i.completed);
+      const completed = items.filter(i => i.completed);
+      const total = items.length;
+      const percent = total > 0 ? Math.round((completed.length / total) * 100) : 0;
+
       document.getElementById('statTask').textContent = active.filter(i => i.type === 'task').length;
       document.getElementById('statEvent').textContent = active.filter(i => i.type === 'event').length;
       document.getElementById('statMeeting').textContent = active.filter(i => i.type === 'meeting').length;
@@ -860,6 +1391,9 @@
       document.getElementById('badgeEvent').textContent = active.filter(i => i.type === 'event').length;
       document.getElementById('badgeMeeting').textContent = active.filter(i => i.type === 'meeting').length;
       document.getElementById('badgeLesson').textContent = active.filter(i => i.type === 'lesson').length;
+
+      document.getElementById('progressText').textContent = `${percent}%`;
+      document.getElementById('progressFill').style.width = `${percent}%`;
     }
 
     // Toggle Complete
@@ -869,7 +1403,30 @@
         item.completed = !item.completed;
         saveToStorage();
         renderItems();
-        showToast(item.completed ? 'סומן כהושלם' : 'סומן כלא הושלם');
+        renderCalendar();
+        if (item.completed) {
+          showToast('🎉', 'הושלם!');
+          spawnConfetti();
+        } else {
+          showToast('↩️', 'סומן כלא הושלם');
+        }
+      }
+    }
+
+    // Confetti
+    function spawnConfetti() {
+      const colors = ['#a8d8b9', '#f0b4c8', '#a8c8e8', '#f0e0a0', '#d4b8e8'];
+      for (let i = 0; i < 12; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-particle';
+        el.style.left = (Math.random() * 60 + 20) + '%';
+        el.style.top = (Math.random() * 30 + 40) + '%';
+        el.style.fontSize = (Math.random() * 10 + 10) + 'px';
+        el.style.color = colors[Math.floor(Math.random() * colors.length)];
+        el.style.animationDelay = (Math.random() * 0.3) + 's';
+        el.textContent = ['✨','🌟','⭐','💫','🎀'][Math.floor(Math.random() * 5)];
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1200);
       }
     }
 
@@ -879,24 +1436,54 @@
       items = items.filter(i => i.id !== id);
       saveToStorage();
       renderItems();
-      showToast('הפריט נמחק');
+      renderCalendar();
+      showToast('🗑️', 'הפריט נמחק');
+    }
+
+    function deleteFromModal() {
+      const editId = document.getElementById('formEditId').value;
+      if (editId && confirm('האם למחוק את הפריט?')) {
+        items = items.filter(i => i.id !== editId);
+        saveToStorage();
+        closeModal();
+        renderItems();
+        renderCalendar();
+        showToast('🗑️', 'הפריט נמחק');
+      }
     }
 
     // Modal
+    function selectType(type) {
+      document.querySelectorAll('.type-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+      });
+      selectedColor = typeDefColors[type];
+      renderColorPicker();
+      updateFormFields(type);
+    }
+
+    function getSelectedType() {
+      const active = document.querySelector('.type-option.active');
+      return active ? active.dataset.type : 'task';
+    }
+
     function openModal(type) {
       document.getElementById('modalOverlay').classList.add('active');
       document.getElementById('modalTitle').textContent = 'הוסף פריט חדש';
       document.getElementById('formEditId').value = '';
-      document.getElementById('formType').value = type || 'task';
+      document.getElementById('deleteBtn').style.display = 'none';
+      selectType(type || 'task');
       document.getElementById('formTitle').value = '';
       document.getElementById('formDescription').value = '';
       document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('formTime').value = '';
+      document.getElementById('formEndTime').value = '';
       document.getElementById('formPriority').value = 'medium';
       document.getElementById('formLocation').value = '';
       document.getElementById('formParticipants').value = '';
       document.getElementById('formSubject').value = '';
-      updateFormFields();
+      selectedColor = typeDefColors[type || 'task'];
+      renderColorPicker();
     }
 
     function editItem(id) {
@@ -905,16 +1492,19 @@
       document.getElementById('modalOverlay').classList.add('active');
       document.getElementById('modalTitle').textContent = 'עריכת פריט';
       document.getElementById('formEditId').value = id;
-      document.getElementById('formType').value = item.type;
+      document.getElementById('deleteBtn').style.display = 'block';
+      selectType(item.type);
       document.getElementById('formTitle').value = item.title;
       document.getElementById('formDescription').value = item.description || '';
       document.getElementById('formDate').value = item.date || '';
       document.getElementById('formTime').value = item.time || '';
+      document.getElementById('formEndTime').value = item.endTime || '';
       document.getElementById('formPriority').value = item.priority || 'medium';
       document.getElementById('formLocation').value = item.location || '';
       document.getElementById('formParticipants').value = item.participants || '';
       document.getElementById('formSubject').value = item.subject || '';
-      updateFormFields();
+      selectedColor = item.color || typeDefColors[item.type];
+      renderColorPicker();
     }
 
     function closeModal() {
@@ -925,29 +1515,27 @@
       if (e.target === document.getElementById('modalOverlay')) closeModal();
     }
 
-    function updateFormFields() {
-      const type = document.getElementById('formType').value;
+    function updateFormFields(type) {
+      type = type || getSelectedType();
       document.getElementById('priorityGroup').style.display = type === 'task' ? 'block' : 'none';
+      document.getElementById('endTimeRow').style.display = ['event', 'meeting', 'lesson'].includes(type) ? 'grid' : 'none';
       document.getElementById('locationGroup').style.display = ['event', 'meeting', 'lesson'].includes(type) ? 'block' : 'none';
       document.getElementById('participantsGroup').style.display = type === 'meeting' ? 'block' : 'none';
       document.getElementById('subjectGroup').style.display = type === 'lesson' ? 'block' : 'none';
 
-      if (type === 'lesson') {
-        document.getElementById('locationLabel').textContent = 'כיתה / מיקום';
-      } else {
-        document.getElementById('locationLabel').textContent = 'מיקום';
-      }
+      document.getElementById('locationLabel').textContent = type === 'lesson' ? 'כיתה / מיקום' : 'מיקום';
     }
 
     function saveItem() {
       const title = document.getElementById('formTitle').value.trim();
       if (!title) {
-        showToast('נא להזין כותרת');
+        showToast('⚠️', 'נא להזין כותרת');
+        document.getElementById('formTitle').focus();
         return;
       }
 
       const editId = document.getElementById('formEditId').value;
-      const type = document.getElementById('formType').value;
+      const type = getSelectedType();
 
       const data = {
         id: editId || Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
@@ -956,10 +1544,12 @@
         description: document.getElementById('formDescription').value.trim(),
         date: document.getElementById('formDate').value,
         time: document.getElementById('formTime').value,
+        endTime: document.getElementById('formEndTime').value,
         priority: type === 'task' ? document.getElementById('formPriority').value : null,
         location: ['event', 'meeting', 'lesson'].includes(type) ? document.getElementById('formLocation').value.trim() : null,
         participants: type === 'meeting' ? document.getElementById('formParticipants').value.trim() : null,
         subject: type === 'lesson' ? document.getElementById('formSubject').value.trim() : null,
+        color: selectedColor,
         completed: false
       };
 
@@ -967,21 +1557,23 @@
         const existing = items.find(i => i.id === editId);
         if (existing) data.completed = existing.completed;
         items = items.map(i => i.id === editId ? data : i);
-        showToast('הפריט עודכן');
+        showToast('✏️', 'הפריט עודכן');
       } else {
         items.push(data);
-        showToast('פריט חדש נוסף');
+        showToast('✅', 'פריט חדש נוסף');
       }
 
       saveToStorage();
       closeModal();
       renderItems();
+      renderCalendar();
     }
 
     // Toast
-    function showToast(msg) {
+    function showToast(icon, msg) {
       const toast = document.getElementById('toast');
-      toast.textContent = msg;
+      toast.querySelector('.toast-icon').textContent = icon;
+      document.getElementById('toastMsg').textContent = msg;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
@@ -989,6 +1581,7 @@
     // Keyboard
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeModal();
+      if (e.key === 'n' && e.ctrlKey) { e.preventDefault(); openModal(); }
     });
 
     // Start
