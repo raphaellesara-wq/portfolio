@@ -1,33 +1,992 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio</title>
+  <title>היומן שלי - מנהל משימות</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
       background: #0f1222;
-      color: #ffffff;
-    }
-    section {
+      color: #e0e0e0;
       min-height: 100vh;
-      padding: 60px 24px;
+      direction: rtl;
+    }
+
+    /* Header */
+    .app-header {
+      background: linear-gradient(135deg, #1a1f3a 0%, #0f1222 100%);
+      border-bottom: 1px solid #2a2f4a;
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .app-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6c63ff, #48c6ef);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-date {
+      color: #8888aa;
+      font-size: 0.9rem;
+    }
+
+    /* Main Layout */
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height: calc(100vh - 65px);
+    }
+
+    /* Sidebar */
+    .sidebar {
       display: flex;
       flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #6668;
+      letter-spacing: 1px;
+      padding: 16px 12px 8px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      color: #aaa;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.2s;
+      font-family: inherit;
+      direction: rtl;
+      text-align: right;
+      width: 100%;
+    }
+
+    .nav-btn:hover { background: #1a1f3a; color: #fff; }
+    .nav-btn.active { background: #6c63ff22; color: #6c63ff; font-weight: 600; }
+
+    .nav-btn .icon { font-size: 1.2rem; width: 28px; text-align: center; }
+
+    .nav-btn .badge {
+      margin-right: auto;
+      margin-left: 0;
+      background: #6c63ff33;
+      color: #6c63ff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
       justify-content: center;
-      max-width: 1100px;
-      margin: auto;
+      gap: 8px;
+      padding: 12px;
+      border: 2px dashed #2a2f4a;
+      background: transparent;
+      color: #6c63ff;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.2s;
+      font-family: inherit;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    .add-btn:hover { background: #6c63ff11; border-color: #6c63ff55; }
+
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .content-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .view-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .view-btn {
+      padding: 6px 14px;
+      border: 1px solid #2a2f4a;
+      background: transparent;
+      color: #888;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .view-btn.active { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+    .view-btn:hover:not(.active) { border-color: #6c63ff55; color: #bbb; }
+
+    /* Search Bar */
+    .search-bar {
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      background: #1a1f3a;
+      border: 1px solid #2a2f4a;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      direction: rtl;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-bar input:focus { border-color: #6c63ff; }
+
+    .search-bar input::placeholder { color: #555; }
+
+    .search-bar .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #555;
+    }
+
+    /* Items List */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .date-group-title {
+      font-size: 0.85rem;
+      color: #6c63ff;
+      padding: 8px 0 4px;
+      font-weight: 600;
+      border-bottom: 1px solid #1a1f3a;
+      margin-top: 8px;
+    }
+
+    .item-card {
+      background: #1a1f3a;
+      border: 1px solid #2a2f4a;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .item-card:hover { border-color: #3a3f5a; transform: translateX(2px); }
+
+    .item-card.completed { opacity: 0.5; }
+    .item-card.completed .item-title { text-decoration: line-through; }
+
+    .item-type-indicator {
+      width: 4px;
+      height: 40px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .type-task { background: #6c63ff; }
+    .type-event { background: #ff6b6b; }
+    .type-meeting { background: #48c6ef; }
+    .type-lesson { background: #ffd93d; }
+
+    .item-checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #3a3f5a;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .item-checkbox:hover { border-color: #6c63ff; }
+    .item-checkbox.checked { background: #6c63ff; border-color: #6c63ff; }
+    .item-checkbox.checked::after { content: '✓'; color: #fff; font-size: 0.8rem; }
+
+    .item-info { flex: 1; min-width: 0; }
+
+    .item-title {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .item-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.8rem;
+      color: #777;
+      flex-wrap: wrap;
+    }
+
+    .item-meta span { display: flex; align-items: center; gap: 4px; }
+
+    .item-priority {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .priority-high { background: #ff6b6b22; color: #ff6b6b; }
+    .priority-medium { background: #ffd93d22; color: #ffd93d; }
+    .priority-low { background: #48c6ef22; color: #48c6ef; }
+
+    .item-actions {
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .item-card:hover .item-actions { opacity: 1; }
+
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #0f1222;
+      color: #888;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .action-btn:hover { color: #fff; }
+    .action-btn.delete:hover { color: #ff6b6b; }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #555;
+    }
+
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+    .empty-state p { font-size: 1rem; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: #1a1f3a;
+      border: 1px solid #2a2f4a;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      direction: rtl;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #999;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: #0f1222;
+      border: 1px solid #2a2f4a;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      direction: rtl;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #6c63ff;
+    }
+
+    .form-group textarea { min-height: 80px; resize: vertical; }
+
+    .form-group select { cursor: pointer; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-start;
+      margin-top: 24px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-primary { background: #6c63ff; color: #fff; }
+    .btn-primary:hover { background: #5a52e0; }
+    .btn-secondary { background: #2a2f4a; color: #aaa; }
+    .btn-secondary:hover { background: #3a3f5a; color: #fff; }
+
+    /* Stats Cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: #1a1f3a;
+      border: 1px solid #2a2f4a;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .stat-task .stat-number { color: #6c63ff; }
+    .stat-event .stat-number { color: #ff6b6b; }
+    .stat-meeting .stat-number { color: #48c6ef; }
+    .stat-lesson .stat-number { color: #ffd93d; }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2a2f4a;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      z-index: 300;
+      transition: transform 0.3s ease;
+      border: 1px solid #3a3f5a;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+
+      .sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 4px;
+        padding-bottom: 8px;
+      }
+
+      .sidebar-section-title { display: none; }
+
+      .nav-btn {
+        white-space: nowrap;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+      }
+
+      .nav-btn .badge { display: none; }
+
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .add-btn { margin-top: 0; }
     }
   </style>
 </head>
 <body>
 
-  <section>
-    <h1>Hi, I’m Raphael</h1>
-    <p>This is my portfolio</p>
-  </section>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="app-title">היומן שלי</div>
+      <div class="header-date" id="headerDate"></div>
+    </div>
+  </header>
+
+  <!-- Main App -->
+  <div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section-title">תצוגה</div>
+      <button class="nav-btn active" data-filter="all" onclick="setFilter('all')">
+        <span class="icon">📋</span> הכל
+        <span class="badge" id="badgeAll">0</span>
+      </button>
+      <button class="nav-btn" data-filter="task" onclick="setFilter('task')">
+        <span class="icon">✅</span> משימות
+        <span class="badge" id="badgeTask">0</span>
+      </button>
+      <button class="nav-btn" data-filter="event" onclick="setFilter('event')">
+        <span class="icon">🎉</span> אירועים
+        <span class="badge" id="badgeEvent">0</span>
+      </button>
+      <button class="nav-btn" data-filter="meeting" onclick="setFilter('meeting')">
+        <span class="icon">🤝</span> פגישות
+        <span class="badge" id="badgeMeeting">0</span>
+      </button>
+      <button class="nav-btn" data-filter="lesson" onclick="setFilter('lesson')">
+        <span class="icon">📚</span> שיעורים
+        <span class="badge" id="badgeLesson">0</span>
+      </button>
+      <button class="add-btn" onclick="openModal()">+ הוסף פריט חדש</button>
+    </aside>
+
+    <!-- Content -->
+    <main class="main-content">
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card stat-task">
+          <div class="stat-number" id="statTask">0</div>
+          <div class="stat-label">משימות</div>
+        </div>
+        <div class="stat-card stat-event">
+          <div class="stat-number" id="statEvent">0</div>
+          <div class="stat-label">אירועים</div>
+        </div>
+        <div class="stat-card stat-meeting">
+          <div class="stat-number" id="statMeeting">0</div>
+          <div class="stat-label">פגישות</div>
+        </div>
+        <div class="stat-card stat-lesson">
+          <div class="stat-number" id="statLesson">0</div>
+          <div class="stat-label">שיעורים</div>
+        </div>
+      </div>
+
+      <!-- Header + Search -->
+      <div class="content-header">
+        <div class="content-title" id="contentTitle">כל הפריטים</div>
+        <div class="view-controls">
+          <button class="view-btn active" onclick="setSortMode('date')">לפי תאריך</button>
+          <button class="view-btn" onclick="setSortMode('priority')">לפי עדיפות</button>
+          <button class="view-btn" onclick="setSortMode('type')">לפי סוג</button>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" placeholder="חיפוש..." id="searchInput" oninput="renderItems()">
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <!-- Items -->
+      <div class="items-list" id="itemsList"></div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-title" id="modalTitle">הוסף פריט חדש</div>
+
+      <div class="form-group">
+        <label>סוג</label>
+        <select id="formType" onchange="updateFormFields()">
+          <option value="task">משימה</option>
+          <option value="event">אירוע</option>
+          <option value="meeting">פגישה</option>
+          <option value="lesson">שיעור</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>כותרת</label>
+        <input type="text" id="formTitle" placeholder="הכנס כותרת...">
+      </div>
+
+      <div class="form-group">
+        <label>תיאור</label>
+        <textarea id="formDescription" placeholder="תיאור (אופציונלי)..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>תאריך</label>
+          <input type="date" id="formDate">
+        </div>
+        <div class="form-group">
+          <label>שעה</label>
+          <input type="time" id="formTime">
+        </div>
+      </div>
+
+      <div class="form-group" id="priorityGroup">
+        <label>עדיפות</label>
+        <select id="formPriority">
+          <option value="low">נמוכה</option>
+          <option value="medium" selected>בינונית</option>
+          <option value="high">גבוהה</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="locationGroup">
+        <label id="locationLabel">מיקום</label>
+        <input type="text" id="formLocation" placeholder="מיקום...">
+      </div>
+
+      <div class="form-group" id="participantsGroup">
+        <label>משתתפים</label>
+        <input type="text" id="formParticipants" placeholder="שמות משתתפים (מופרדים בפסיק)...">
+      </div>
+
+      <div class="form-group" id="subjectGroup">
+        <label>מקצוע</label>
+        <input type="text" id="formSubject" placeholder="שם המקצוע...">
+      </div>
+
+      <input type="hidden" id="formEditId">
+
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="saveItem()">שמור</button>
+        <button class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // State
+    let items = JSON.parse(localStorage.getItem('journal-items') || '[]');
+    let currentFilter = 'all';
+    let sortMode = 'date';
+
+    // Hebrew labels
+    const typeLabels = {
+      task: 'משימה',
+      event: 'אירוע',
+      meeting: 'פגישה',
+      lesson: 'שיעור'
+    };
+
+    const priorityLabels = {
+      high: 'גבוהה',
+      medium: 'בינונית',
+      low: 'נמוכה'
+    };
+
+    const filterTitles = {
+      all: 'כל הפריטים',
+      task: 'משימות',
+      event: 'אירועים',
+      meeting: 'פגישות',
+      lesson: 'שיעורים'
+    };
+
+    // Init
+    function init() {
+      updateHeaderDate();
+      renderItems();
+      updateStats();
+    }
+
+    function updateHeaderDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('headerDate').textContent = now.toLocaleDateString('he-IL', options);
+    }
+
+    // Filter
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+      });
+      document.getElementById('contentTitle').textContent = filterTitles[filter];
+      renderItems();
+    }
+
+    // Sort
+    function setSortMode(mode) {
+      sortMode = mode;
+      document.querySelectorAll('.view-btn').forEach((btn, i) => {
+        const modes = ['date', 'priority', 'type'];
+        btn.classList.toggle('active', modes[i] === mode);
+      });
+      renderItems();
+    }
+
+    // Save to localStorage
+    function saveToStorage() {
+      localStorage.setItem('journal-items', JSON.stringify(items));
+    }
+
+    // Render
+    function renderItems() {
+      const list = document.getElementById('itemsList');
+      const search = document.getElementById('searchInput').value.trim().toLowerCase();
+
+      let filtered = items.filter(item => {
+        if (currentFilter !== 'all' && item.type !== currentFilter) return false;
+        if (search && !item.title.toLowerCase().includes(search) &&
+            !(item.description || '').toLowerCase().includes(search)) return false;
+        return true;
+      });
+
+      // Sort
+      if (sortMode === 'date') {
+        filtered.sort((a, b) => {
+          const da = a.date || '9999-99-99';
+          const db = b.date || '9999-99-99';
+          return da.localeCompare(db) || (a.time || '').localeCompare(b.time || '');
+        });
+      } else if (sortMode === 'priority') {
+        const pOrder = { high: 0, medium: 1, low: 2 };
+        filtered.sort((a, b) => (pOrder[a.priority] ?? 1) - (pOrder[b.priority] ?? 1));
+      } else if (sortMode === 'type') {
+        const tOrder = { task: 0, event: 1, meeting: 2, lesson: 3 };
+        filtered.sort((a, b) => tOrder[a.type] - tOrder[b.type]);
+      }
+
+      // Move completed to end
+      filtered.sort((a, b) => (a.completed ? 1 : 0) - (b.completed ? 1 : 0));
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>אין פריטים להצגה</p>
+          </div>`;
+        updateStats();
+        return;
+      }
+
+      let html = '';
+      let lastDate = null;
+
+      filtered.forEach(item => {
+        if (sortMode === 'date' && item.date !== lastDate) {
+          lastDate = item.date;
+          html += `<div class="date-group-title">${formatDateHebrew(item.date)}</div>`;
+        }
+
+        const priorityClass = item.priority ? `priority-${item.priority}` : '';
+        const priorityText = item.priority ? priorityLabels[item.priority] : '';
+
+        let metaHtml = '';
+        if (item.date) metaHtml += `<span>📅 ${formatDateShort(item.date)}</span>`;
+        if (item.time) metaHtml += `<span>🕐 ${item.time}</span>`;
+        if (item.location) metaHtml += `<span>📍 ${item.location}</span>`;
+        if (item.participants) metaHtml += `<span>👥 ${item.participants}</span>`;
+        if (item.subject) metaHtml += `<span>📖 ${item.subject}</span>`;
+        metaHtml += `<span>${typeLabels[item.type]}</span>`;
+
+        html += `
+          <div class="item-card ${item.completed ? 'completed' : ''}">
+            <div class="item-type-indicator type-${item.type}"></div>
+            <div class="item-checkbox ${item.completed ? 'checked' : ''}" onclick="toggleComplete('${item.id}')"></div>
+            <div class="item-info">
+              <div class="item-title">${escapeHtml(item.title)}</div>
+              <div class="item-meta">${metaHtml}</div>
+            </div>
+            ${priorityText ? `<div class="item-priority ${priorityClass}">${priorityText}</div>` : ''}
+            <div class="item-actions">
+              <button class="action-btn" onclick="editItem('${item.id}')" title="עריכה">✏️</button>
+              <button class="action-btn delete" onclick="deleteItem('${item.id}')" title="מחיקה">🗑️</button>
+            </div>
+          </div>`;
+      });
+
+      list.innerHTML = html;
+      updateStats();
+    }
+
+    function formatDateHebrew(dateStr) {
+      if (!dateStr) return 'ללא תאריך';
+      const date = new Date(dateStr + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      if (date.getTime() === today.getTime()) return 'היום';
+      if (date.getTime() === tomorrow.getTime()) return 'מחר';
+
+      return date.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+
+    function formatDateShort(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr + 'T00:00:00');
+      return date.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Stats
+    function updateStats() {
+      const active = items.filter(i => !i.completed);
+      document.getElementById('statTask').textContent = active.filter(i => i.type === 'task').length;
+      document.getElementById('statEvent').textContent = active.filter(i => i.type === 'event').length;
+      document.getElementById('statMeeting').textContent = active.filter(i => i.type === 'meeting').length;
+      document.getElementById('statLesson').textContent = active.filter(i => i.type === 'lesson').length;
+
+      document.getElementById('badgeAll').textContent = active.length;
+      document.getElementById('badgeTask').textContent = active.filter(i => i.type === 'task').length;
+      document.getElementById('badgeEvent').textContent = active.filter(i => i.type === 'event').length;
+      document.getElementById('badgeMeeting').textContent = active.filter(i => i.type === 'meeting').length;
+      document.getElementById('badgeLesson').textContent = active.filter(i => i.type === 'lesson').length;
+    }
+
+    // Toggle Complete
+    function toggleComplete(id) {
+      const item = items.find(i => i.id === id);
+      if (item) {
+        item.completed = !item.completed;
+        saveToStorage();
+        renderItems();
+        showToast(item.completed ? 'סומן כהושלם' : 'סומן כלא הושלם');
+      }
+    }
+
+    // Delete
+    function deleteItem(id) {
+      if (!confirm('האם למחוק את הפריט?')) return;
+      items = items.filter(i => i.id !== id);
+      saveToStorage();
+      renderItems();
+      showToast('הפריט נמחק');
+    }
+
+    // Modal
+    function openModal(type) {
+      document.getElementById('modalOverlay').classList.add('active');
+      document.getElementById('modalTitle').textContent = 'הוסף פריט חדש';
+      document.getElementById('formEditId').value = '';
+      document.getElementById('formType').value = type || 'task';
+      document.getElementById('formTitle').value = '';
+      document.getElementById('formDescription').value = '';
+      document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('formTime').value = '';
+      document.getElementById('formPriority').value = 'medium';
+      document.getElementById('formLocation').value = '';
+      document.getElementById('formParticipants').value = '';
+      document.getElementById('formSubject').value = '';
+      updateFormFields();
+    }
+
+    function editItem(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      document.getElementById('modalOverlay').classList.add('active');
+      document.getElementById('modalTitle').textContent = 'עריכת פריט';
+      document.getElementById('formEditId').value = id;
+      document.getElementById('formType').value = item.type;
+      document.getElementById('formTitle').value = item.title;
+      document.getElementById('formDescription').value = item.description || '';
+      document.getElementById('formDate').value = item.date || '';
+      document.getElementById('formTime').value = item.time || '';
+      document.getElementById('formPriority').value = item.priority || 'medium';
+      document.getElementById('formLocation').value = item.location || '';
+      document.getElementById('formParticipants').value = item.participants || '';
+      document.getElementById('formSubject').value = item.subject || '';
+      updateFormFields();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function updateFormFields() {
+      const type = document.getElementById('formType').value;
+      document.getElementById('priorityGroup').style.display = type === 'task' ? 'block' : 'none';
+      document.getElementById('locationGroup').style.display = ['event', 'meeting', 'lesson'].includes(type) ? 'block' : 'none';
+      document.getElementById('participantsGroup').style.display = type === 'meeting' ? 'block' : 'none';
+      document.getElementById('subjectGroup').style.display = type === 'lesson' ? 'block' : 'none';
+
+      if (type === 'lesson') {
+        document.getElementById('locationLabel').textContent = 'כיתה / מיקום';
+      } else {
+        document.getElementById('locationLabel').textContent = 'מיקום';
+      }
+    }
+
+    function saveItem() {
+      const title = document.getElementById('formTitle').value.trim();
+      if (!title) {
+        showToast('נא להזין כותרת');
+        return;
+      }
+
+      const editId = document.getElementById('formEditId').value;
+      const type = document.getElementById('formType').value;
+
+      const data = {
+        id: editId || Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+        type: type,
+        title: title,
+        description: document.getElementById('formDescription').value.trim(),
+        date: document.getElementById('formDate').value,
+        time: document.getElementById('formTime').value,
+        priority: type === 'task' ? document.getElementById('formPriority').value : null,
+        location: ['event', 'meeting', 'lesson'].includes(type) ? document.getElementById('formLocation').value.trim() : null,
+        participants: type === 'meeting' ? document.getElementById('formParticipants').value.trim() : null,
+        subject: type === 'lesson' ? document.getElementById('formSubject').value.trim() : null,
+        completed: false
+      };
+
+      if (editId) {
+        const existing = items.find(i => i.id === editId);
+        if (existing) data.completed = existing.completed;
+        items = items.map(i => i.id === editId ? data : i);
+        showToast('הפריט עודכן');
+      } else {
+        items.push(data);
+        showToast('פריט חדש נוסף');
+      }
+
+      saveToStorage();
+      closeModal();
+      renderItems();
+    }
+
+    // Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Start
+    init();
+  </script>
 
 </body>
 </html>
